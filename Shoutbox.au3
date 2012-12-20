@@ -2,11 +2,11 @@
 #AutoIt3Wrapper_Icon=epvp.ico
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Res_Description=Elitepvpers Extern Shoutbox
-#AutoIt3Wrapper_Res_Fileversion=1.0.2.0
+#AutoIt3Wrapper_Res_Fileversion=1.0.3.0
 #AutoIt3Wrapper_Res_LegalCopyright=by Der-Eddy
 #AutoIt3Wrapper_Res_Language=1031
 #AutoIt3Wrapper_Run_Obfuscator=y
-#Obfuscator_Parameters=/striponlyincludes
+#Obfuscator_Parameters=/striponlyincludes /om
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <ButtonConstants.au3>
 #include <EditConstants.au3>
@@ -31,9 +31,9 @@ Local $dll32 = DllOpen("user32.dll")
 AdlibRegister("_hotkey", 250)
 
 Global $image, $msg, $pic, $hImage, $hGraphic, $hBmp, $STM_SETIMAGE, $i, $ig, $old, $oldtext, $naughtymode, $traynotify, $highlightown, $indent, $error, $timeinput, $time, $statsDN, $statsN, $statsS, $Messages, $topchat, $Source_n, $Benutzer, $PWs
-Global $Gui, $GUI1, $Form1, $Button1, $Label1, $Label2, $Labela, $Labeli, $input, $Input1, $Input2, $Checkbox1, $hwid, $t, $name, $group, $oHTTP, $pass, $password, $ani, $sb, $Edit, $ignorecheck, $secondnew, $thirdnew, $time, $timeinput, $bID, $bPW
+Global $Gui, $GUI1, $Form1, $Button1, $Labela, $Labeli, $input, $Input1, $Input2, $Checkbox1, $hwid, $t, $name, $group, $oHTTP, $pass, $password, $ani, $sb, $Edit, $ignorecheck, $secondnew, $thirdnew, $time, $timeinput, $bID, $bPW, $channel, $ch
 Global $source, $page, $oWebTCP, $bLoggedIn, $securitytoken
-Global $version = "1.0.2"
+Global $version = "1.0.3"
 Global $MP = 0
 Global $MPG = 0
 Global $skip = False
@@ -58,6 +58,11 @@ Global $version2[1]
 
 If @Compiled And $CmdLine[0] > 0 Then
 	If $CmdLine[1] = "Debug" Then $debug = True
+EndIf
+If NOT @Compiled Then $debug = True
+If $debug = True Then
+	FileDelete("first.html")
+	FileDelete("second.html")
 EndIf
 If IniRead($file, "Shoutbox", "Naughty", "4") <> 4 Then $naughty = True
 
@@ -84,28 +89,33 @@ If @error <> 0 Then
 EndIf
 $version2 = StringRegExp($Source_n, "&lt;Version&gt;(.*?)&lt;/Version&gt;", 1)
 If NOT @Compiled And $version2[0] <> $version And $prev Then $version &= " Preview"
-If @Compiled And $version2[0] <> $version And NOT $debug Then MsgBox(64, "Neue Version", "Es gibt eine neue Version zum downloaden!")
+If @Compiled And $version2[0] <> $version And NOT $debug Then _Update()
 If $debug = True Then $version &= " Debug"
 
-$Form1 = GUICreate("Elitepvpers Zugangsdaten", 246, 170, -1, -1, BitOR($WS_MINIMIZEBOX, $WS_SYSMENU))
+$Form1 = GUICreate("Elitepvpers Zugangsdaten", 246, 194, -1, -1, BitOR($WS_MINIMIZEBOX, $WS_SYSMENU))
 GUISetOnEvent($GUI_EVENT_CLOSE, "_Exit")
-$Label1 = GUICtrlCreateLabel("Benutzername:", 16, 16, 75, 17)
-$Label2 = GUICtrlCreateLabel("Passwort:", 16, 40, 50, 17)
+GUICtrlCreateLabel("Benutzername:", 16, 16, 75, 17)
+GUICtrlCreateLabel("Passwort:", 16, 41, 50, 17)
+GUICtrlCreateLabel("Channel:", 16, 66, 50, 17)
+GUICtrlSetCursor(-1, 4)
+GUICtrlSetTip(-1, "Kann jederzeit geändert werden!")
 $Input1 = GUICtrlCreateInput("", 96, 13, 137, 21)
 $Input2 = GUICtrlCreateInput("", 96, 38, 137, 21, $ES_PASSWORD)
-$Labeli = GUICtrlCreateLabel("Deine HWID: (?)", 16, 65, 100, 17)
+$channel = GUICtrlCreateCombo("Deutsch", 96, 63, 137, 21)
+GUICtrlSetData(-1, "English")
+$Labeli = GUICtrlCreateLabel("Deine HWID: (?)", 16, 89, 100, 17)
 GUICtrlSetCursor(-1, 4)
 GUICtrlSetTip(-1, "Solltest du Premium User oder Moderator sein ist es empfehlenswert die Hardware ID einzutragen" & @LF & 'Einfach auf "Profil bearbeiten" bzw. "Edit Your Details" und ganz nach unten scrollen und dort kannst du sie dann eintragen' & @LF & "Die HWID wird auch zum verschlüsseln deines Passwortes benutzt wenn du es speicherst", "HWID", 1, 1)
-$Labela = GUICtrlCreateLabel("Profil bearbeiten", 138, 66, 100, 17)
+$Labela = GUICtrlCreateLabel("Profil bearbeiten", 138, 90, 100, 17)
 GUICtrlSetTip(-1, "Ganz unten eintragen")
 GUICtrlSetOnEvent(-1, "Profil")
 GUICtrlSetFont(-1, 8, 800, 4)
 GUICtrlSetColor(-1, 0x0000FF)
 GUICtrlSetCursor(-1, 0)
-GUICtrlCreateInput($_hwid, 16, 85, 215, 21, BitOR($ES_READONLY, $ES_CENTER))
-$Checkbox1 = GUICtrlCreateCheckbox("Passwort speichern?", 16, 113, 129, 17)
+GUICtrlCreateInput($_hwid, 16, 109, 215, 21, BitOR($ES_READONLY, $ES_CENTER))
+$Checkbox1 = GUICtrlCreateCheckbox("Passwort speichern?", 16, 137, 129, 17)
 GUICtrlSetState(-1, $GUI_CHECKED)
-$Button1 = GUICtrlCreateButton("OK", 144, 110, 89, 25, $BS_DEFPUSHBUTTON)
+$Button1 = GUICtrlCreateButton("OK", 144, 134, 89, 25, $BS_DEFPUSHBUTTON)
 GUICtrlSetOnEvent(-1, "Eintrag")
 HotKeySet("{ENTER}", "Eintrag")
 GUISetState(@SW_HIDE)
@@ -183,6 +193,11 @@ GUICtrlCreateButton("Send", 830 - $MP, 13, 70, 22)
 GUICtrlSetOnEvent(-1, "_Post")
 GUICtrlCreateButton("Refresh", 910 - $MP, 13, 70, 22)
 GUICtrlSetOnEvent(-1, "_Refresh")
+GUICtrlCreateLabel("Channel:", 823 - $MP, 43)
+$channel = GUICtrlCreateCombo("Deutsch", 870 - $MP, 40, 80, 21)
+GUICtrlSetData(-1, "English", IniRead($file, "Shoutbox", "Channel", "Deutsch"))
+GUICtrlSetOnEvent(-1, "Settings")
+
 $Edit = _GUICtrlRichEdit_Create($Gui, "Shoutbox wird geladen ...", 200 - $MP, 65, 780, 390, BitOR($ES_MULTILINE, $WS_VSCROLL, $ES_AUTOVSCROLL, $ES_READONLY))
 _GUICtrlRichEdit_AutoDetectURL($Edit, True)
 ;~ GUISetBkColor(0xE1E1E1, $Gui)
@@ -229,25 +244,6 @@ If StringInStr($version, "Preview") Or StringInStr($version, "Debug") Then
 Else
 	GUICtrlCreateLabel("Version: " & $version, 910 - $MP, 640)
 EndIf
-Func Settings()
-	IniWrite($file, "Shoutbox", "Ignore", GUICtrlRead($ignorecheck))
-	IniWrite($file, "Shoutbox", "Highlight", GUICtrlRead($highlightown))
-	IniWrite($file, "Shoutbox", "Tray", GUICtrlRead($traynotify))
-	IniWrite($file, "Shoutbox", "Indent", GUICtrlRead($indent))
-	IniWrite($file, "Shoutbox", "Naughty", GUICtrlRead($naughtymode))
-	If (GUICtrlRead($naughtymode) <> 4 And $naughty = False) Or (GUICtrlRead($naughtymode) = 4 And $naughty = True) Then
-		If @Compiled = 1 Then
-			Run( FileGetShortName(@ScriptFullPath))
-		Else
-			Run( FileGetShortName(@AutoItExe) & " " & FileGetShortName(@ScriptFullPath))
-		EndIf
-		_Exit(1)
-	EndIf
-	_GUICtrlRichEdit_SetText($Edit, "Shoutbox wird geladen ...")
-	$Traydo = False
-	Ueberpruefung(2)
-	Ueberpruefung(1)
-EndFunc
 If IniRead($file, "Shoutbox", "Ignore", "4") <> 4 Then GUICtrlSetState($ignorecheck, $GUI_CHECKED)
 If IniRead($file, "Shoutbox", "Highlight", "4") <> 4 Then GUICtrlSetState($highlightown, $GUI_CHECKED)
 If IniRead($file, "Shoutbox", "Tray", "1") <> 4 Then GUICtrlSetState($traynotify, $GUI_CHECKED)
@@ -255,21 +251,25 @@ If IniRead($file, "Shoutbox", "Indent", "1") <> 4 Then GUICtrlSetState($indent, 
 If IniRead($file, "Shoutbox", "Naughty", "4") <> 4 Then GUICtrlSetState($naughtymode, $GUI_CHECKED)
 GUISetState(@SW_SHOW)
 
-Ueberpruefung(2)
-
+If GUICtrlRead($channel) = "English" Then
+		$ch = 1
+	Else
+		$ch = 0
+EndIf
+Ueberpruefung(2, $ch)
 While 1
 	IniWrite($file, "Shoutbox", "Time", GUICtrlRead($timeinput))
-	Ueberpruefung(1)
+	Ueberpruefung(1, $ch)
 	Sleep($time)
 WEnd
 
-Func Ueberpruefung($page)
+Func Ueberpruefung($page, $ch = 0)
 	;GUICtrlCreateGif($Gui, $temp & "progress.gif", 960, 40, 16, 16)
 	$ani = GUICtrlCreateGifEx($Gui, $temp & "progress.gif", 960 - $MP, 40)
 	$oWebTCP = _WebTcp_Create(False, False)
 	$oWebTCP.Navigate("http://www.elitepvpers.com/")
 	$bLoggedIn = _Login($oWebTCP)
-	If $bLoggedIn Then $oWebTCP.Navigate("http://www.elitepvpers.com/forum/mgc_cb_evo.php?do=view_archives&page=" & $page & "&langid=2")
+	If $bLoggedIn Then $oWebTCP.Navigate("http://www.elitepvpers.com/forum/mgc_cb_evo.php?do=view_archives&page=" & $page & "&langid=2&channel_id=" & $ch)
 	$source = $oWebTCP.Body
 	If NOT StringInStr($source, '<style type="text/css" id="vbulletin_css">') Then
 		MsgBox(48, "Error", "Es konnte keine Verbindung zu Elitepvpers hergestellt werden!")
@@ -285,7 +285,11 @@ Func Ueberpruefung($page)
 	EndIf
 	$securitytoken = StringRegExp($source, 'var SECURITYTOKEN = "(.*?)";', 1)
 	If $debug = True Then FileWrite("first.html", $source)
-	$source = _StringBetween($source, 'src="clientscript/mgc_cb_evo_archives.js"></script>', '<div align="center">MGC Chatbox Evo')
+	$source = _StringBetween($source, '/mgc_cb_evo_archives.js"></script>', '<div align="center">MGC Chatbox Evo')
+	If NOT IsArray($source) Then
+		MsgBox(48, "Error", "Ein Fehler beim auslesen der Shoutbox ist aufgetreten!", 10)
+		Exit 2
+	EndIf
 	If $debug = True Then FileWrite("second.html", $source[0])
 	$source = StringReplace($source[0], '<img width="16" height="16" src="images/smilies/frown.gif" border="0" alt="" title="Frown" class="inlineimg" />', ':o')
 	$source = StringReplace($source, '<img width="16" height="16" src="images/smilies/smile.gif" border="0" alt="" title="Smile" class="inlineimg" />', ':)')
@@ -410,11 +414,16 @@ Func _Login($oWebTCP) ; Danke an AMrK von autoitbot.de
 	EndIf
 EndFunc ;==>_Login
 
-Func _Post()
+Func _Post($ch = 0)
 ;~ 	$oWebTCP = _WebTcp_Create()
 ;~ 	$oWebTCP.Navigate("http://www.elitepvpers.com/")
 ;~ 	$bLoggedIn = _Login($oWebTCP)
-	If $bLoggedIn Then $oWebTCP.Navigate("http://www.elitepvpers.com/forum/mgc_cb_evo_ajax.php", "do=ajax_chat&channel_id=0&chat=" & StringReplace(StringReplace(GUICtrlRead($input), " ", "%20"), ":", "%3A") & "&securitytoken=" & $securitytoken[0] & "&securitytoken=" & $securitytoken[0] & "&s=")
+	If GUICtrlRead($channel) = "English" Then
+		$ch = 1
+	Else
+		$ch = 0
+	EndIf
+	If $bLoggedIn Then $oWebTCP.Navigate("http://www.elitepvpers.com/forum/mgc_cb_evo_ajax.php", "do=ajax_chat&channel_id=" & $ch & "&chat=" & StringReplace(StringReplace(GUICtrlRead($input), " ", "%20"), ":", "%3A") & "&securitytoken=" & $securitytoken[0] & "&securitytoken=" & $securitytoken[0] & "&s=")
 	GUICtrlSetData($input, "")
 EndFunc
 
@@ -481,10 +490,45 @@ Func Eintrag() ; Speichert Einloggdaten nach erstem Aufrufen
 	EndIf
 	IniWrite($file, "Benutzerdaten", "HWID", $_hwid)
 	IniWrite($file, "Benutzerdaten", "Group", $group[0])
+	IniWrite($file, "Shoutbox", "Channel", GUICtrlRead($channel))
 	GUIDelete($Form1)
 	HotKeySet("{ENTER}")
 	$GUI1 = 1
 EndFunc ;==>Eintrag
+
+Func Settings()
+	IniWrite($file, "Shoutbox", "Ignore", GUICtrlRead($ignorecheck))
+	IniWrite($file, "Shoutbox", "Highlight", GUICtrlRead($highlightown))
+	IniWrite($file, "Shoutbox", "Tray", GUICtrlRead($traynotify))
+	IniWrite($file, "Shoutbox", "Indent", GUICtrlRead($indent))
+	IniWrite($file, "Shoutbox", "Naughty", GUICtrlRead($naughtymode))
+	If (GUICtrlRead($naughtymode) <> 4 And $naughty = False) Or (GUICtrlRead($naughtymode) = 4 And $naughty = True) Then
+		If @Compiled = 1 Then
+			Run(FileGetShortName(@ScriptFullPath))
+		Else
+			Run(FileGetShortName(@AutoItExe) & " " & FileGetShortName(@ScriptFullPath))
+		EndIf
+		_Exit(1)
+	EndIf
+	If GUICtrlRead($channel) <> IniRead($file, "Shoutbox", "Channel", "Deutsch") Then
+		IniWrite($file, "Shoutbox", "Channel", GUICtrlRead($channel))
+		If @Compiled = 1 Then
+			Run(FileGetShortName(@ScriptFullPath))
+		Else
+			Run(FileGetShortName(@AutoItExe) & " " & FileGetShortName(@ScriptFullPath))
+		EndIf
+		_Exit(1)
+	EndIf
+	_GUICtrlRichEdit_SetText($Edit, "Shoutbox wird geladen ...")
+	$Traydo = False
+	If GUICtrlRead($channel) = "English" Then
+		$ch = 1
+	Else
+		$ch = 0
+	EndIf
+	Ueberpruefung(2, $ch)
+	Ueberpruefung(1, $ch)
+EndFunc
 
 Func _mimimize()
 	GUISetState(@SW_MINIMIZE, $Gui)
@@ -498,8 +542,18 @@ Func Profil()
 	ShellExecute("http://www.elitepvpers.com/forum/profile.php?do=editprofile")
 EndFunc ;==>Profil
 
+Func _Update()
+	MsgBox(64, "Neue Version", "Es gibt eine neue Version zum downloaden!")
+	ShellExecute("http://www.elitepvpers.com/forum/premium-releases-sharing/2090399-premium-staff-extern-shoutbox-tool.html")
+EndFunc
+
 Func _Refresh()
-	Ueberpruefung(1)
+	If GUICtrlRead($channel) = "English" Then
+		$ch = 1
+	Else
+		$ch = 0
+	EndIf
+	Ueberpruefung(1, $ch)
 EndFunc
 
 Func _hotkey()
