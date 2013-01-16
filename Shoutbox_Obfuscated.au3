@@ -25,7 +25,6 @@ Global Const $GUI_EVENT_MINIMIZE = -4
 Global Const $GUI_EVENT_RESTORE = -5
 Global Const $GUI_RUNDEFMSG = 'GUI_RUNDEFMSG'
 Global Const $GUI_CHECKED = 1
-Global Const $GUI_ENABLE = 64
 Global Const $SS_NOTIFY = 0x0100
 Global Const $WS_MINIMIZEBOX = 0x00020000
 Global Const $WS_SYSMENU = 0x00080000
@@ -4225,7 +4224,7 @@ Global $smilies[11] = ["smile", "redface", "biggrin", "wink", "tongue", "cool", 
 Global $first[15]
 Global $second[23]
 Global $third[15]
-Global $ignore[50]
+Global $ignore[100]
 Global $version2[1]
 
 If @Compiled And $CmdLine[0] > 0 Then
@@ -4314,6 +4313,13 @@ $group = _StringBetween($hwid, "<usergroup>", "</usergroup>")
 IniWrite($file, "Benutzerdaten", "Group", $group[0])
 EndIf
 
+Switch IniRead($file, "Benutzerdaten", "Group", "Level One")
+Case "Banned Users"
+MsgBox(64, "Banned", "Du bist in Elitepvpers gebannt! Dieses Tool schließt sich automatisch")
+Exit 0
+;Case "Moderators", "Global Moderators", "Co-Administrators", "Administrators"
+EndSwitch
+
 If IniRead($file, "Benutzerdaten", "ID", "") = "" Then
 MsgBox(48, "Error", "Einstellungsdatei ist fehlerhaft!" & @CRLF & $file & " wird nun gelöscht und das Tool neugestartet")
 FileDelete($file)
@@ -4336,7 +4342,6 @@ $password = _StringEncrypt(0, IniRead($file, "Benutzerdaten", "PW", ""), $passwo
 EndIf
 
 $Benutzer = IniRead($file, "Benutzerdaten", "ID", "default")
-
 $pass = StringLower(StringTrimLeft(_Crypt_HashData($password, $CALG_MD5), 2))
 
 _WebTcp_Startup()
@@ -4382,15 +4387,8 @@ GUICtrlCreateUpdown($timeinput)
 GUICtrlSetLimit(-1, 999, 10)
 $time = GUICtrlRead($timeinput) * 1000
 GUICtrlCreateLabel(" sec. suchen", 412 - $MPG, 484)
-$ignorecheck = GUICtrlCreateCheckbox("Ignorierte User ausblenden", 260 - $MPG, 510, -1, -1, $WS_DISABLED)
+$ignorecheck = GUICtrlCreateCheckbox("Ignorierte User ausblenden", 260 - $MPG, 510)
 GUICtrlSetOnEvent(-1, "Settings")
-Switch IniRead($file, "Benutzerdaten", "Group", "Level One")
-Case "Banned Users"
-MsgBox(64, "Banned", "Du bist in Elitepvpers gebannt! Dieses Tool schließt sich automatisch")
-Exit 0
-Case "Moderators", "Global Moderators", "Co-Administrators", "Administrators"
-GUICtrlSetState($ignorecheck, $GUI_ENABLE)
-EndSwitch
 $highlightown = GUICtrlCreateCheckbox("Eigene Shouts hervorheben", 260 - $MPG, 530)
 GUICtrlSetOnEvent(-1, "Settings")
 $traynotify = GUICtrlCreateCheckbox("Traybenachrichtigungen", 260 - $MPG, 550)
@@ -4641,15 +4639,7 @@ IniWrite($file, "Shoutbox", "Highlight", GUICtrlRead($highlightown))
 IniWrite($file, "Shoutbox", "Tray", GUICtrlRead($traynotify))
 IniWrite($file, "Shoutbox", "Indent", GUICtrlRead($indent))
 IniWrite($file, "Shoutbox", "Naughty", GUICtrlRead($naughtymode))
-If (GUICtrlRead($naughtymode) <> 4 And $naughty = False) Or (GUICtrlRead($naughtymode) = 4 And $naughty = True) Then
-If @Compiled = 1 Then
-Run(FileGetShortName(@ScriptFullPath))
-Else
-Run(FileGetShortName(@AutoItExe) & " " & FileGetShortName(@ScriptFullPath))
-EndIf
-_Exit(1)
-EndIf
-If GUICtrlRead($channel) <> IniRead($file, "Shoutbox", "Channel", "Deutsch") Then
+If (GUICtrlRead($naughtymode) <> 4 And $naughty = False) Or (GUICtrlRead($naughtymode) = 4 And $naughty = True) Or GUICtrlRead($channel) <> IniRead($file, "Shoutbox", "Channel", "Deutsch") Then
 IniWrite($file, "Shoutbox", "Channel", GUICtrlRead($channel))
 If @Compiled = 1 Then
 Run(FileGetShortName(@ScriptFullPath))
