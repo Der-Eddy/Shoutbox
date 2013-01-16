@@ -2,16 +2,13 @@
 #AutoIt3Wrapper_Icon=epvp.ico
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Res_Description=Elitepvpers Extern Shoutbox
-#AutoIt3Wrapper_Res_Fileversion=1.0.2.0
+#AutoIt3Wrapper_Res_Fileversion=1.0.3.0
 #AutoIt3Wrapper_Res_LegalCopyright=by Der-Eddy
 #AutoIt3Wrapper_Res_Language=1031
 #AutoIt3Wrapper_Run_Obfuscator=y
-#Obfuscator_Parameters=/striponlyincludes
+#Obfuscator_Parameters=/striponlyincludes /om
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\ButtonConstants.au3
 Global Const $BS_DEFPUSHBUTTON = 0x0001
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\ButtonConstants.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\EditConstants.au3
 Global Const $ES_CENTER = 1
 Global Const $ES_MULTILINE = 4
 Global Const $ES_PASSWORD = 32
@@ -23,19 +20,12 @@ Global Const $EM_SETSEL = 0xB1
 Global Const $__EDITCONSTANT_WS_VSCROLL = 0x00200000
 Global Const $__EDITCONSTANT_WS_HSCROLL = 0x00100000
 Global Const $GUI_SS_DEFAULT_EDIT = BitOR($ES_WANTRETURN, $__EDITCONSTANT_WS_VSCROLL, $__EDITCONSTANT_WS_HSCROLL, $ES_AUTOVSCROLL, $ES_AUTOHSCROLL)
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\EditConstants.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\GUIConstantsEx.au3
 Global Const $GUI_EVENT_CLOSE = -3
 Global Const $GUI_EVENT_MINIMIZE = -4
 Global Const $GUI_EVENT_RESTORE = -5
 Global Const $GUI_RUNDEFMSG = 'GUI_RUNDEFMSG'
 Global Const $GUI_CHECKED = 1
-Global Const $GUI_ENABLE = 64
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\GUIConstantsEx.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\StaticConstants.au3
 Global Const $SS_NOTIFY = 0x0100
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\StaticConstants.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\WindowsConstants.au3
 Global Const $WS_MINIMIZEBOX = 0x00020000
 Global Const $WS_SYSMENU = 0x00080000
 Global Const $WS_VSCROLL = 0x00200000
@@ -46,9 +36,7 @@ Global Const $WM_PAINT = 0x000F
 Global Const $RDW_VALIDATE = 0x0008
 Global Const $RDW_UPDATENOW = 0x0100
 Global Const $GUI_SS_DEFAULT_GUI = BitOR($WS_MINIMIZEBOX, $WS_CAPTION, $WS_POPUP, $WS_SYSMENU)
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\WindowsConstants.au3
 ;~ #Include <Array.au3>
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\Crypt.au3
 Global Const $PROV_RSA_FULL = 0x1
 Global Const $PROV_RSA_AES = 24
 Global Const $CRYPT_VERIFYCONTEXT = 0xF0000000
@@ -154,29 +142,95 @@ EndFunc
 Func __Crypt_ContextSet($hCryptContext)
 $__g_aCryptInternalData[2] = $hCryptContext
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\Crypt.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\GuiButton.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\SendMessage.au3
 Func _SendMessage($hWnd, $iMsg, $wParam = 0, $lParam = 0, $iReturn = 0, $wParamType = "wparam", $lParamType = "lparam", $sReturnType = "lresult")
 Local $aResult = DllCall("user32.dll", $sReturnType, "SendMessageW", "hwnd", $hWnd, "uint", $iMsg, $wParamType, $wParam, $lParamType, $lParam)
 If @error Then Return SetError(@error, @extended, "")
 If $iReturn >= 0 And $iReturn <= 4 Then Return $aResult[$iReturn]
 Return $aResult
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\SendMessage.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\WinAPI.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\StructureConstants.au3
 Global Const $tagPOINT = "struct;long X;long Y;endstruct"
+Global Const $tagRECT = "struct;long Left;long Top;long Right;long Bottom;endstruct"
+Global Const $tagSYSTEMTIME = "struct;word Year;word Month;word Dow;word Day;word Hour;word Minute;word Second;word MSeconds;endstruct"
+Global Const $tagNMHDR = "struct;hwnd hWndFrom;uint_ptr IDFrom;INT Code;endstruct"
+Global Const $tagCOMBOBOXEXITEM = "uint Mask;int_ptr Item;ptr Text;int TextMax;int Image;int SelectedImage;int OverlayImage;" & _
+"int Indent;lparam Param"
+Global Const $tagNMCOMBOBOXEX = $tagNMHDR & ";uint Mask;int_ptr Item;ptr Text;int TextMax;int Image;" & _
+"int SelectedImage;int OverlayImage;int Indent;lparam Param"
+Global Const $tagDTPRANGE = "word MinYear;word MinMonth;word MinDOW;word MinDay;word MinHour;word MinMinute;" & _
+"word MinSecond;word MinMSecond;word MaxYear;word MaxMonth;word MaxDOW;word MaxDay;word MaxHour;" & _
+"word MaxMinute;word MaxSecond;word MaxMSecond;bool MinValid;bool MaxValid"
+Global Const $tagEVENTLOGRECORD = "dword Length;dword Reserved;dword RecordNumber;dword TimeGenerated;dword TimeWritten;dword EventID;" & _
+"word EventType;word NumStrings;word EventCategory;word ReservedFlags;dword ClosingRecordNumber;dword StringOffset;" & _
+"dword UserSidLength;dword UserSidOffset;dword DataLength;dword DataOffset"
 Global Const $tagGDIPSTARTUPINPUT = "uint Version;ptr Callback;bool NoThread;bool NoCodecs"
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\StructureConstants.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\FileConstants.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\FileConstants.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\Security.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\SecurityConstants.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\SecurityConstants.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\WinAPIError.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\WinAPIError.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\Security.au3
+Global Const $tagGDIPIMAGECODECINFO = "byte CLSID[16];byte FormatID[16];ptr CodecName;ptr DllName;ptr FormatDesc;ptr FileExt;" & _
+"ptr MimeType;dword Flags;dword Version;dword SigCount;dword SigSize;ptr SigPattern;ptr SigMask"
+Global Const $tagLVITEM = "struct;uint Mask;int Item;int SubItem;uint State;uint StateMask;ptr Text;int TextMax;int Image;lparam Param;" & _
+"int Indent;int GroupID;uint Columns;ptr pColumns;ptr piColFmt;int iGroup;endstruct"
+Global Const $tagNMLISTVIEW = $tagNMHDR & ";int Item;int SubItem;uint NewState;uint OldState;uint Changed;" & _
+"struct;long ActionX;long ActionY;endstruct;lparam Param"
+Global Const $tagNMLVCUSTOMDRAW = "struct;" & $tagNMHDR & ";dword dwDrawStage;handle hdc;" & $tagRECT & _
+";dword_ptr dwItemSpec;uint uItemState;lparam lItemlParam;endstruct" & _
+";dword clrText;dword clrTextBk;int iSubItem;dword dwItemType;dword clrFace;int iIconEffect;" & _
+"int iIconPhase;int iPartId;int iStateId;struct;long TextLeft;long TextTop;long TextRight;long TextBottom;endstruct;uint uAlign"
+Global Const $tagNMITEMACTIVATE = $tagNMHDR & ";int Index;int SubItem;uint NewState;uint OldState;uint Changed;" & _
+$tagPOINT & ";lparam lParam;uint KeyFlags"
+Global Const $tagMCHITTESTINFO = "uint Size;" & $tagPOINT & ";uint Hit;" & $tagSYSTEMTIME & _
+";" & $tagRECT & ";int iOffset;int iRow;int iCol"
+Global Const $tagMCMONTHRANGE = "word MinYear;word MinMonth;word MinDOW;word MinDay;word MinHour;word MinMinute;word MinSecond;" & _
+"word MinMSeconds;word MaxYear;word MaxMonth;word MaxDOW;word MaxDay;word MaxHour;word MaxMinute;word MaxSecond;" & _
+"word MaxMSeconds;short Span"
+Global Const $tagMCRANGE = "word MinYear;word MinMonth;word MinDOW;word MinDay;word MinHour;word MinMinute;word MinSecond;" & _
+"word MinMSeconds;word MaxYear;word MaxMonth;word MaxDOW;word MaxDay;word MaxHour;word MaxMinute;word MaxSecond;" & _
+"word MaxMSeconds;short MinSet;short MaxSet"
+Global Const $tagMCSELRANGE = "word MinYear;word MinMonth;word MinDOW;word MinDay;word MinHour;word MinMinute;word MinSecond;" & _
+"word MinMSeconds;word MaxYear;word MaxMonth;word MaxDOW;word MaxDay;word MaxHour;word MaxMinute;word MaxSecond;" & _
+"word MaxMSeconds"
+Global Const $tagNMSELCHANGE = $tagNMHDR & _
+";struct;word BegYear;word BegMonth;word BegDOW;word BegDay;word BegHour;word BegMinute;word BegSecond;word BegMSeconds;endstruct;" & _
+"struct;word EndYear;word EndMonth;word EndDOW;word EndDay;word EndHour;word EndMinute;word EndSecond;word EndMSeconds;endstruct"
+Global Const $tagTVITEM = "struct;uint Mask;handle hItem;uint State;uint StateMask;ptr Text;int TextMax;int Image;int SelectedImage;" & _
+"int Children;lparam Param;endstruct"
+Global Const $tagNMTREEVIEW = $tagNMHDR & ";uint Action;" & _
+"struct;uint OldMask;handle OldhItem;uint OldState;uint OldStateMask;" & _
+"ptr OldText;int OldTextMax;int OldImage;int OldSelectedImage;int OldChildren;lparam OldParam;endstruct;" & _
+"struct;uint NewMask;handle NewhItem;uint NewState;uint NewStateMask;" & _
+"ptr NewText;int NewTextMax;int NewImage;int NewSelectedImage;int NewChildren;lparam NewParam;endstruct;" & _
+"struct;long PointX;long PointY;endstruct"
+Global Const $tagNMTVCUSTOMDRAW = "struct;" & $tagNMHDR & ";dword DrawStage;handle HDC;" & $tagRECT & _
+";dword_ptr ItemSpec;uint ItemState;lparam ItemParam;endstruct" & _
+";dword ClrText;dword ClrTextBk;int Level"
+Global Const $tagMENUITEMINFO = "uint Size;uint Mask;uint Type;uint State;uint ID;handle SubMenu;handle BmpChecked;handle BmpUnchecked;" & _
+"ulong_ptr ItemData;ptr TypeData;uint CCH;handle BmpItem"
+Global Const $tagREBARBANDINFO = "uint cbSize;uint fMask;uint fStyle;dword clrFore;dword clrBack;ptr lpText;uint cch;" & _
+"int iImage;hwnd hwndChild;uint cxMinChild;uint cyMinChild;uint cx;handle hbmBack;uint wID;uint cyChild;uint cyMaxChild;" & _
+"uint cyIntegral;uint cxIdeal;lparam lParam;uint cxHeader;" & $tagRECT & ";uint uChevronState"
+Global Const $tagNMRBAUTOSIZE = $tagNMHDR & ";bool fChanged;" & _
+"struct;long TargetLeft;long TargetTop;long TargetRight;long TargetBottom;endstruct;" & _
+"struct;long ActualLeft;long ActualTop;long ActualRight;long ActualBottom;endstruct"
+Global Const $tagNMREBARCHILDSIZE = $tagNMHDR & ";uint uBand;uint wID;" & _
+"struct;long CLeft;long CTop;long CRight;long CBottom;endstruct;" & _
+"struct;long BLeft;long BTop;long BRight;long BBottom;endstruct"
+Global Const $tagNMTOOLBAR = $tagNMHDR & ";int iItem;" & _
+"struct;int iBitmap;int idCommand;byte fsState;byte fsStyle;dword_ptr dwData;int_ptr iString;endstruct" & _
+";int cchText;ptr pszText;" & $tagRECT
+Global Const $tagOPENFILENAME = "dword StructSize;hwnd hwndOwner;handle hInstance;ptr lpstrFilter;ptr lpstrCustomFilter;" & _
+"dword nMaxCustFilter;dword nFilterIndex;ptr lpstrFile;dword nMaxFile;ptr lpstrFileTitle;dword nMaxFileTitle;" & _
+"ptr lpstrInitialDir;ptr lpstrTitle;dword Flags;word nFileOffset;word nFileExtension;ptr lpstrDefExt;lparam lCustData;" & _
+"ptr lpfnHook;ptr lpTemplateName;ptr pvReserved;dword dwReserved;dword FlagsEx"
+Global Const $tagBITMAPINFO = "struct;dword Size;long Width;long Height;word Planes;word BitCount;dword Compression;dword SizeImage;" & _
+"long XPelsPerMeter;long YPelsPerMeter;dword ClrUsed;dword ClrImportant;endstruct;dword RGBQuad"
+Global Const $tagSCROLLBARINFO = "dword cbSize;" & $tagRECT & ";int dxyLineButton;int xyThumbTop;" & _
+"int xyThumbBottom;int reserved;dword rgstate[6]"
+Global Const $tagLOGFONT = "long Height;long Width;long Escapement;long Orientation;long Weight;byte Italic;byte Underline;" & _
+"byte Strikeout;byte CharSet;byte OutPrecision;byte ClipPrecision;byte Quality;byte PitchAndFamily;wchar FaceName[32]"
+Global Const $tagSTARTUPINFO = "dword Size;ptr Reserved1;ptr Desktop;ptr Title;dword X;dword Y;dword XSize;dword YSize;dword XCountChars;" & _
+"dword YCountChars;dword FillAttribute;dword Flags;word ShowWindow;word Reserved2;ptr Reserved3;handle StdInput;" & _
+"handle StdOutput;handle StdError"
+Global Const $tagTEXTMETRIC = "long tmHeight;long tmAscent;long tmDescent;long tmInternalLeading;long tmExternalLeading;" & _
+"long tmAveCharWidth;long tmMaxCharWidth;long tmWeight;long tmOverhang;long tmDigitizedAspectX;long tmDigitizedAspectY;" & _
+"wchar tmFirstChar;wchar tmLastChar;wchar tmDefaultChar;wchar tmBreakChar;byte tmItalic;byte tmUnderlined;byte tmStruckOut;" & _
+"byte tmPitchAndFamily;byte tmCharSet"
 Global $__gaInProcess_WinAPI[64][2] = [[0, 0]]
 Global Const $HGDI_ERROR = Ptr(-1)
 Global Const $INVALID_HANDLE_VALUE = Ptr(-1)
@@ -187,6 +241,9 @@ Global Const $KF_UP = 0x8000
 Global Const $LLKHF_EXTENDED = BitShift($KF_EXTENDED, 8)
 Global Const $LLKHF_ALTDOWN = BitShift($KF_ALTDOWN, 8)
 Global Const $LLKHF_UP = BitShift($KF_UP, 8)
+Global Const $tagMEMORYSTATUSEX = "dword Length;dword MemoryLoad;" & _
+"uint64 TotalPhys;uint64 AvailPhys;uint64 TotalPageFile;uint64 AvailPageFile;" & _
+"uint64 TotalVirtual;uint64 AvailVirtual;uint64 AvailExtendedVirtual"
 Func _WinAPI_CreateWindowEx($iExStyle, $sClass, $sName, $iStyle, $iX, $iY, $iWidth, $iHeight, $hParent, $hMenu = 0, $hInstance = 0, $pParam = 0)
 If $hInstance = 0 Then $hInstance = _WinAPI_GetModuleHandle("")
 Local $aResult = DllCall("user32.dll", "hwnd", "CreateWindowExW", "dword", $iExStyle, "wstr", $sClass, "wstr", $sName, "dword", $iStyle, "int", $iX, _
@@ -282,8 +339,6 @@ Local $aResult = DllCall("user32.dll", "hwnd", "SetFocus", "hwnd", $hWnd)
 If @error Then Return SetError(@error, @extended, 0)
 Return $aResult[0]
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\WinAPI.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\UDFGlobalID.au3
 Global Const $_UDF_GlobalIDs_OFFSET = 2
 Global Const $_UDF_GlobalID_MAX_WIN = 16
 Global Const $_UDF_STARTID = 10000
@@ -367,13 +422,6 @@ $sClassNames = StringReplace($sClassNames, $sSeparator, ",")
 __UDF_DebugPrint("Invalid Class Type(s):" & @LF & @TAB & "Expecting Type(s): " & $sClassNames & @LF & @TAB & "Received Type : " & _WinAPI_GetClassName($hWnd))
 Exit
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\UDFGlobalID.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\GuiButton.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\File.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\File.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\GDIPlus.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\GDIPlusConstants.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\GDIPlusConstants.au3
 Global $ghGDIPDll = 0
 Global $giGDIPRef = 0
 Global $giGDIPToken = 0
@@ -428,8 +476,6 @@ If @error Then Return SetError(@error, @extended, False)
 $giGDIPToken = DllStructGetData($tToken, "Data")
 Return $aResult[0] = 0
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\GDIPlus.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\IE.au3
 #region Header
 #endregion Header
 #region Global Variables and Constants
@@ -456,22 +502,11 @@ EndFunc
 #endregion Internal functions
 #region ProtoType Functions
 #endregion ProtoType Functions
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\IE.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\GuiRichEdit.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\Clipboard.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\Memory.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\MemoryConstants.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\MemoryConstants.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\ProcessConstants.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\ProcessConstants.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\Memory.au3
 Func _ClipBoard_RegisterFormat($sFormat)
 Local $aResult = DllCall("user32.dll", "uint", "RegisterClipboardFormatW", "wstr", $sFormat)
 If @error Then Return SetError(@error, @extended, 0)
 Return $aResult[0]
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\Clipboard.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\RichEditConstants.au3
 Global Const $__RICHEDITCONSTANT_WM_USER = 0x400
 Global Const $EM_AUTOURLDETECT = $__RICHEDITCONSTANT_WM_USER + 91
 Global Const $EM_EXGETSEL = $__RICHEDITCONSTANT_WM_USER + 52
@@ -511,10 +546,10 @@ Global Const $PFE_NOLINENUMBER = BitShift($PFM_NOLINENUMBER, 16)
 Global Const $PFE_NOWIDOWCONTROL = BitShift($PFM_NOWIDOWCONTROL, 16)
 Global Const $PFE_DONOTHYPHEN = BitShift($PFM_DONOTHYPHEN, 16)
 Global Const $PFE_SIDEBYSIDE = BitShift($PFM_SIDEBYSIDE, 16)
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\RichEditConstants.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\Misc.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\FontConstants.au3
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\FontConstants.au3
+Global Const $tagCHOOSECOLOR = "dword Size;hwnd hWndOwnder;handle hInstance;dword rgbResult;ptr CustColors;dword Flags;lparam lCustData;" & _
+"ptr lpfnHook;ptr lpTemplateName"
+Global Const $tagCHOOSEFONT = "dword Size;hwnd hWndOwner;handle hDC;ptr LogFont;int PointSize;dword Flags;dword rgbColors;lparam CustData;" & _
+"ptr fnHook;ptr TemplateName;handle hInstance;ptr szStyle;word FontType;int SizeMin;int SizeMax"
 Func _Iif($fTest, $vTrueVal, $vFalseVal)
 If $fTest Then
 Return $vTrueVal
@@ -527,7 +562,6 @@ Local $a_R = DllCall($vDLL, "short", "GetAsyncKeyState", "int", '0x' & $sHexKey)
 If @error Then Return SetError(@error, @extended, False)
 Return BitAND($a_R[0], 0x8000) <> 0
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\Misc.au3
 Global $Debug_RE = False
 Global $_GRE_sRTFClassName, $h_GUICtrlRTF_lib, $_GRE_Version, $_GRE_TwipsPeSpaceUnit = 1440
 Global $_GRE_hUser32dll, $_GRE_CF_RTF, $_GRE_CF_RETEXTOBJ
@@ -559,9 +593,18 @@ Global Const $__RICHEDITCONSTANT_WS_TABSTOP = 0x00010000
 Global Const $__RICHEDITCONSTANT_WM_SETFONT = 0x0030
 Global Const $_GCR_S_OK = 0
 Global Const $_GCR_E_NOTIMPL = 0x80004001
-Global Const $tagCHARFORMAT = "struct;uint cbSize;dword dwMask;dword dwEffects;long yHeight;long yOffset;dword crCharColor;" & "byte bCharSet;byte bPitchAndFamily;wchar szFaceName[32];endstruct"
+Global Const $tagCHARFORMAT = "struct;uint cbSize;dword dwMask;dword dwEffects;long yHeight;long yOffset;dword crCharColor;" & _
+"byte bCharSet;byte bPitchAndFamily;wchar szFaceName[32];endstruct"
+Global Const $tagCHARFORMAT2 = $tagCHARFORMAT & ";word wWeight;short sSpacing;dword crBackColor;dword lcid;dword dwReserved;" & _
+"short sStyle;word wKerning;byte bUnderlineType;byte bAnimation;byte bRevAuthor;byte bReserved1"
 Global Const $tagCHARRANGE = "struct;long cpMin;long cpMax;endstruct"
 Global Const $tagGETTEXTLENGTHEX = "dword flags;uint codepage"
+Global Const $tagPARAFORMAT = "uint cbSize;dword dwMask;word wNumbering;word wEffects;long dxStartIndent;" _
+& "long dxRightIndent;long dxOffset;word wAlignment;short cTabCount;long rgxTabs[32]"
+Global Const $tagPARAFORMAT2 = $tagPARAFORMAT _
+& ";long dySpaceBefore;long dySpaceAfter;long dyLineSpacing;short sStyle;byte bLineSpacingRule;" _
+& "byte bOutlineLevel;word wShadingWeight;word wShadingStyle;word wNumberingStart;word wNumberingStyle;" _
+& "word wNumberingTab;word wBorderSpace;word wBorderWidth;word wBorders"
 Global Const $tagSETTEXTEX = "dword flags;uint codepage"
 Func _GUICtrlRichEdit_AppendText($hWnd, $sText)
 If Not _WinAPI_IsClassName($hWnd, $_GRE_sRTFClassName) Then Return SetError(101, 0, False)
@@ -897,8 +940,6 @@ If @error = 1 Then ConsoleWrite("!> Needs MemoryDLL.au3 for correct release of I
 EndIf
 Return $sc
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\GuiRichEdit.au3
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\String.au3
 Func _StringBetween($s_String, $s_Start, $s_End, $v_Case = -1)
 Local $s_case = ""
 If $v_Case = Default Or $v_Case = -1 Then $s_case = "(?i)"
@@ -1028,8 +1069,6 @@ Local $a_rev = DllCall("msvcrt.dll", "ptr:cdecl", "_strrev", "struct*", $t_chars
 If @error Or $a_rev[0] = 0 Then Return SetError(2, 0, "")
 Return DllStructGetData($t_chars, 1)
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\String.au3
-; #######  Start Include source C:\Users\Eduard\Desktop\Autoit\UserCP_Checker\Include\GetHWID.au3
 Func _MD5($Data)
 $hProv = DllStructCreate("ULONG_PTR")
 $hHash = DllStructCreate("ULONG_PTR")
@@ -1074,10 +1113,7 @@ $ReturnData = StringLower(_MD5(DllStructGetData($HW_PROFILE_INFO, 2) & $HDDSeria
 If @error Then Return SetError(3, "", False)
 Return $ReturnData
 EndFunc
-; #######  End Include source C:\Users\Eduard\Desktop\Autoit\UserCP_Checker\Include\GetHWID.au3
-; #######  Start Include source C:\Users\Eduard\Desktop\Autoit\UserCP_Checker\Include\_Ani.au3
 #AutoIt3Wrapper_AU3Check_Parameters= -d -w 1 -w 2 -w 3 -w 4 -w 5 -w 6
-; #######  Start Include source C:\Program Files (x86)\AutoIt3\include\Timers.au3
 Global $_Timers_aTimerIDs[1][3]
 Func _Timer_KillTimer($hWnd, $iTimerID)
 Local $aResult[1] = [0], $hCallBack = 0, $iUBound = UBound($_Timers_aTimerIDs) - 1
@@ -1143,10 +1179,39 @@ Next
 EndIf
 Return $aResult[0]
 EndFunc
-; #######  End Include source C:\Program Files (x86)\AutoIt3\include\Timers.au3
 _GDIPlus_Startup()
 #Region
-Global Const $tagANIHeader = 'dword cbSizeOf;' & 'dword cFrames;' & 'dword cSteps;' & 'dword cx;' & 'dword cy;' & 'dword cBitCount;' & 'dword cPlanes;' & 'dword JifRate;' & 'dword flags' & ''
+Global Const $tagGifGraphicsControlExtension = 'byte Introducer;' & _
+'byte Label;' & _
+'byte BlockSize;' & _
+'byte Packed;' & _
+'ushort DelayTime;' & _
+'byte ColorIndex;' & _
+'byte Terminator;' & _
+''
+Global Const $tagGifLogicalScreenDescriptor = 'ushort ScreenWidth;' & _
+'ushort ScreenHeight;' & _
+'byte Packed;' & _
+'byte BackgroundColor;' & _
+'byte AspectRatio;' & _
+''
+Global Const $tagGifImageDescriptor = 'byte Separator;' & _
+'ushort Left;' & _
+'ushort Top;' & _
+'ushort Width;' & _
+'ushort Height;' & _
+'byte Packed;' & _
+''
+Global Const $tagANIHeader = 'dword cbSizeOf;' & _
+'dword cFrames;' & _
+'dword cSteps;' & _
+'dword cx;' & _
+'dword cy;' & _
+'dword cBitCount;' & _
+'dword cPlanes;' & _
+'dword JifRate;' & _
+'dword flags' & _
+''
 Global Const $FOURCC_RIFF = 'RIFF'
 Global Const $FOURCC_anih = 'anih'
 Global Const $FOURCC_rate = 'rate'
@@ -1318,10 +1383,7 @@ FileDelete($_ani_TempDir & '*')
 _GDIPlus_Shutdown()
 EndFunc
 #EndRegion
-; #######  End Include source C:\Users\Eduard\Desktop\Autoit\UserCP_Checker\Include\_Ani.au3
 #Obfuscator_Off
-; #######  Start Include source C:\Users\Eduard\Desktop\Autoit\UserCP_Checker\Include\WebTcp.au3
-; #######  Start Include source C:\Users\Eduard\Desktop\Autoit\UserCP_Checker\Include\AutoItObject.au3
 ; #INDEX# =======================================================================================================================
 ; Title .........: AutoItObject
 ; AutoIt Version : 3.3
@@ -3176,7 +3238,6 @@ EndFunc   ;==>_AutoItObject_DllStructCreate
 
 #endregion Public UDFs
 ;--------------------------------------------------------------------------------------------------------------------------------------
-; #######  End Include source C:\Users\Eduard\Desktop\Autoit\UserCP_Checker\Include\AutoItObject.au3
 
 #region Copyright & Lizenz
 ;¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯;
@@ -4128,7 +4189,6 @@ Func _WebTcp_SplitFirstChar($oSelf, $sString, $sTrimmer = "=")
 	Return $aArray
 EndFunc
 #endregion Main
-; #######  End Include source C:\Users\Eduard\Desktop\Autoit\UserCP_Checker\Include\WebTcp.au3
 #Obfuscator_On
 #Obfuscator_On
 #Obfuscator_On
@@ -4142,9 +4202,9 @@ Local $dll32 = DllOpen("user32.dll")
 AdlibRegister("_hotkey", 250)
 
 Global $image, $msg, $pic, $hImage, $hGraphic, $hBmp, $STM_SETIMAGE, $i, $ig, $old, $oldtext, $naughtymode, $traynotify, $highlightown, $indent, $error, $timeinput, $time, $statsDN, $statsN, $statsS, $Messages, $topchat, $Source_n, $Benutzer, $PWs
-Global $Gui, $GUI1, $Form1, $Button1, $Label1, $Label2, $Labela, $Labeli, $input, $Input1, $Input2, $Checkbox1, $hwid, $t, $name, $group, $oHTTP, $pass, $password, $ani, $sb, $Edit, $ignorecheck, $secondnew, $thirdnew, $time, $timeinput, $bID, $bPW
+Global $Gui, $GUI1, $Form1, $Button1, $Labela, $Labeli, $input, $Input1, $Input2, $Checkbox1, $hwid, $t, $name, $group, $oHTTP, $pass, $password, $ani, $sb, $Edit, $ignorecheck, $secondnew, $thirdnew, $time, $timeinput, $bID, $bPW, $channel, $ch
 Global $source, $page, $oWebTCP, $bLoggedIn, $securitytoken
-Global $version = "1.0.2"
+Global $version = "1.0.3"
 Global $MP = 0
 Global $MPG = 0
 Global $skip = False
@@ -4164,11 +4224,16 @@ Global $smilies[11] = ["smile", "redface", "biggrin", "wink", "tongue", "cool", 
 Global $first[15]
 Global $second[23]
 Global $third[15]
-Global $ignore[50]
+Global $ignore[100]
 Global $version2[1]
 
 If @Compiled And $CmdLine[0] > 0 Then
 If $CmdLine[1] = "Debug" Then $debug = True
+EndIf
+If NOT @Compiled Then $debug = True
+If $debug = True Then
+FileDelete("first.html")
+FileDelete("second.html")
 EndIf
 If IniRead($file, "Shoutbox", "Naughty", "4") <> 4 Then $naughty = True
 
@@ -4195,28 +4260,33 @@ Exit 1
 EndIf
 $version2 = StringRegExp($Source_n, "&lt;Version&gt;(.*?)&lt;/Version&gt;", 1)
 If NOT @Compiled And $version2[0] <> $version And $prev Then $version &= " Preview"
-If @Compiled And $version2[0] <> $version And NOT $debug Then MsgBox(64, "Neue Version", "Es gibt eine neue Version zum downloaden!")
+If @Compiled And $version2[0] <> $version And NOT $debug Then _Update()
 If $debug = True Then $version &= " Debug"
 
-$Form1 = GUICreate("Elitepvpers Zugangsdaten", 246, 170, -1, -1, BitOR($WS_MINIMIZEBOX, $WS_SYSMENU))
+$Form1 = GUICreate("Elitepvpers Zugangsdaten", 246, 194, -1, -1, BitOR($WS_MINIMIZEBOX, $WS_SYSMENU))
 GUISetOnEvent($GUI_EVENT_CLOSE, "_Exit")
-$Label1 = GUICtrlCreateLabel("Benutzername:", 16, 16, 75, 17)
-$Label2 = GUICtrlCreateLabel("Passwort:", 16, 40, 50, 17)
+GUICtrlCreateLabel("Benutzername:", 16, 16, 75, 17)
+GUICtrlCreateLabel("Passwort:", 16, 41, 50, 17)
+GUICtrlCreateLabel("Channel:", 16, 66, 50, 17)
+GUICtrlSetCursor(-1, 4)
+GUICtrlSetTip(-1, "Kann jederzeit geändert werden!")
 $Input1 = GUICtrlCreateInput("", 96, 13, 137, 21)
 $Input2 = GUICtrlCreateInput("", 96, 38, 137, 21, $ES_PASSWORD)
-$Labeli = GUICtrlCreateLabel("Deine HWID: (?)", 16, 65, 100, 17)
+$channel = GUICtrlCreateCombo("Deutsch", 96, 63, 137, 21)
+GUICtrlSetData(-1, "English")
+$Labeli = GUICtrlCreateLabel("Deine HWID: (?)", 16, 89, 100, 17)
 GUICtrlSetCursor(-1, 4)
 GUICtrlSetTip(-1, "Solltest du Premium User oder Moderator sein ist es empfehlenswert die Hardware ID einzutragen" & @LF & 'Einfach auf "Profil bearbeiten" bzw. "Edit Your Details" und ganz nach unten scrollen und dort kannst du sie dann eintragen' & @LF & "Die HWID wird auch zum verschlüsseln deines Passwortes benutzt wenn du es speicherst", "HWID", 1, 1)
-$Labela = GUICtrlCreateLabel("Profil bearbeiten", 138, 66, 100, 17)
+$Labela = GUICtrlCreateLabel("Profil bearbeiten", 138, 90, 100, 17)
 GUICtrlSetTip(-1, "Ganz unten eintragen")
 GUICtrlSetOnEvent(-1, "Profil")
 GUICtrlSetFont(-1, 8, 800, 4)
 GUICtrlSetColor(-1, 0x0000FF)
 GUICtrlSetCursor(-1, 0)
-GUICtrlCreateInput($_hwid, 16, 85, 215, 21, BitOR($ES_READONLY, $ES_CENTER))
-$Checkbox1 = GUICtrlCreateCheckbox("Passwort speichern?", 16, 113, 129, 17)
+GUICtrlCreateInput($_hwid, 16, 109, 215, 21, BitOR($ES_READONLY, $ES_CENTER))
+$Checkbox1 = GUICtrlCreateCheckbox("Passwort speichern?", 16, 137, 129, 17)
 GUICtrlSetState(-1, $GUI_CHECKED)
-$Button1 = GUICtrlCreateButton("OK", 144, 110, 89, 25, $BS_DEFPUSHBUTTON)
+$Button1 = GUICtrlCreateButton("OK", 144, 134, 89, 25, $BS_DEFPUSHBUTTON)
 GUICtrlSetOnEvent(-1, "Eintrag")
 HotKeySet("{ENTER}", "Eintrag")
 GUISetState(@SW_HIDE)
@@ -4243,6 +4313,13 @@ $group = _StringBetween($hwid, "<usergroup>", "</usergroup>")
 IniWrite($file, "Benutzerdaten", "Group", $group[0])
 EndIf
 
+Switch IniRead($file, "Benutzerdaten", "Group", "Level One")
+Case "Banned Users"
+MsgBox(64, "Banned", "Du bist in Elitepvpers gebannt! Dieses Tool schließt sich automatisch")
+Exit 0
+;Case "Moderators", "Global Moderators", "Co-Administrators", "Administrators"
+EndSwitch
+
 If IniRead($file, "Benutzerdaten", "ID", "") = "" Then
 MsgBox(48, "Error", "Einstellungsdatei ist fehlerhaft!" & @CRLF & $file & " wird nun gelöscht und das Tool neugestartet")
 FileDelete($file)
@@ -4265,7 +4342,6 @@ $password = _StringEncrypt(0, IniRead($file, "Benutzerdaten", "PW", ""), $passwo
 EndIf
 
 $Benutzer = IniRead($file, "Benutzerdaten", "ID", "default")
-
 $pass = StringLower(StringTrimLeft(_Crypt_HashData($password, $CALG_MD5), 2))
 
 _WebTcp_Startup()
@@ -4294,6 +4370,11 @@ GUICtrlCreateButton("Send", 830 - $MP, 13, 70, 22)
 GUICtrlSetOnEvent(-1, "_Post")
 GUICtrlCreateButton("Refresh", 910 - $MP, 13, 70, 22)
 GUICtrlSetOnEvent(-1, "_Refresh")
+GUICtrlCreateLabel("Channel:", 823 - $MP, 43)
+$channel = GUICtrlCreateCombo("Deutsch", 870 - $MP, 40, 80, 21)
+GUICtrlSetData(-1, "English", IniRead($file, "Shoutbox", "Channel", "Deutsch"))
+GUICtrlSetOnEvent(-1, "Settings")
+
 $Edit = _GUICtrlRichEdit_Create($Gui, "Shoutbox wird geladen ...", 200 - $MP, 65, 780, 390, BitOR($ES_MULTILINE, $WS_VSCROLL, $ES_AUTOVSCROLL, $ES_READONLY))
 _GUICtrlRichEdit_AutoDetectURL($Edit, True)
 ;~ GUISetBkColor(0xE1E1E1, $Gui)
@@ -4306,15 +4387,8 @@ GUICtrlCreateUpdown($timeinput)
 GUICtrlSetLimit(-1, 999, 10)
 $time = GUICtrlRead($timeinput) * 1000
 GUICtrlCreateLabel(" sec. suchen", 412 - $MPG, 484)
-$ignorecheck = GUICtrlCreateCheckbox("Ignorierte User ausblenden", 260 - $MPG, 510, -1, -1, $WS_DISABLED)
+$ignorecheck = GUICtrlCreateCheckbox("Ignorierte User ausblenden", 260 - $MPG, 510)
 GUICtrlSetOnEvent(-1, "Settings")
-Switch IniRead($file, "Benutzerdaten", "Group", "Level One")
-Case "Banned Users"
-MsgBox(64, "Banned", "Du bist in Elitepvpers gebannt! Dieses Tool schließt sich automatisch")
-Exit 0
-Case "Moderators", "Global Moderators", "Co-Administrators", "Administrators"
-GUICtrlSetState($ignorecheck, $GUI_ENABLE)
-EndSwitch
 $highlightown = GUICtrlCreateCheckbox("Eigene Shouts hervorheben", 260 - $MPG, 530)
 GUICtrlSetOnEvent(-1, "Settings")
 $traynotify = GUICtrlCreateCheckbox("Traybenachrichtigungen", 260 - $MPG, 550)
@@ -4340,25 +4414,6 @@ GUICtrlCreateLabel("Version: " & $version, 880 - $MP, 640)
 Else
 GUICtrlCreateLabel("Version: " & $version, 910 - $MP, 640)
 EndIf
-Func Settings()
-IniWrite($file, "Shoutbox", "Ignore", GUICtrlRead($ignorecheck))
-IniWrite($file, "Shoutbox", "Highlight", GUICtrlRead($highlightown))
-IniWrite($file, "Shoutbox", "Tray", GUICtrlRead($traynotify))
-IniWrite($file, "Shoutbox", "Indent", GUICtrlRead($indent))
-IniWrite($file, "Shoutbox", "Naughty", GUICtrlRead($naughtymode))
-If (GUICtrlRead($naughtymode) <> 4 And $naughty = False) Or (GUICtrlRead($naughtymode) = 4 And $naughty = True) Then
-If @Compiled = 1 Then
-Run( FileGetShortName(@ScriptFullPath))
-Else
-Run( FileGetShortName(@AutoItExe) & " " & FileGetShortName(@ScriptFullPath))
-EndIf
-_Exit(1)
-EndIf
-_GUICtrlRichEdit_SetText($Edit, "Shoutbox wird geladen ...")
-$Traydo = False
-Ueberpruefung(2)
-Ueberpruefung(1)
-EndFunc
 If IniRead($file, "Shoutbox", "Ignore", "4") <> 4 Then GUICtrlSetState($ignorecheck, $GUI_CHECKED)
 If IniRead($file, "Shoutbox", "Highlight", "4") <> 4 Then GUICtrlSetState($highlightown, $GUI_CHECKED)
 If IniRead($file, "Shoutbox", "Tray", "1") <> 4 Then GUICtrlSetState($traynotify, $GUI_CHECKED)
@@ -4366,21 +4421,25 @@ If IniRead($file, "Shoutbox", "Indent", "1") <> 4 Then GUICtrlSetState($indent, 
 If IniRead($file, "Shoutbox", "Naughty", "4") <> 4 Then GUICtrlSetState($naughtymode, $GUI_CHECKED)
 GUISetState(@SW_SHOW)
 
-Ueberpruefung(2)
-
+If GUICtrlRead($channel) = "English" Then
+$ch = 1
+Else
+$ch = 0
+EndIf
+Ueberpruefung(2, $ch)
 While 1
 IniWrite($file, "Shoutbox", "Time", GUICtrlRead($timeinput))
-Ueberpruefung(1)
+Ueberpruefung(1, $ch)
 Sleep($time)
 WEnd
 
-Func Ueberpruefung($page)
+Func Ueberpruefung($page, $ch = 0)
 ;GUICtrlCreateGif($Gui, $temp & "progress.gif", 960, 40, 16, 16)
 $ani = GUICtrlCreateGifEx($Gui, $temp & "progress.gif", 960 - $MP, 40)
 $oWebTCP = _WebTcp_Create(False, False)
 $oWebTCP.Navigate("http://www.elitepvpers.com/")
 $bLoggedIn = _Login($oWebTCP)
-If $bLoggedIn Then $oWebTCP.Navigate("http://www.elitepvpers.com/forum/mgc_cb_evo.php?do=view_archives&page=" & $page & "&langid=2")
+If $bLoggedIn Then $oWebTCP.Navigate("http://www.elitepvpers.com/forum/mgc_cb_evo.php?do=view_archives&page=" & $page & "&langid=2&channel_id=" & $ch)
 $source = $oWebTCP.Body
 If NOT StringInStr($source, '<style type="text/css" id="vbulletin_css">') Then
 MsgBox(48, "Error", "Es konnte keine Verbindung zu Elitepvpers hergestellt werden!")
@@ -4396,7 +4455,11 @@ $ignore = StringRegExp($oWebTCP.Body, '.html">(.*?)</a><input type="hidden" name
 EndIf
 $securitytoken = StringRegExp($source, 'var SECURITYTOKEN = "(.*?)";', 1)
 If $debug = True Then FileWrite("first.html", $source)
-$source = _StringBetween($source, 'src="clientscript/mgc_cb_evo_archives.js"></script>', '<div align="center">MGC Chatbox Evo')
+$source = _StringBetween($source, '/mgc_cb_evo_archives.js"></script>', '<div align="center">MGC Chatbox Evo')
+If NOT IsArray($source) Then
+MsgBox(48, "Error", "Ein Fehler beim auslesen der Shoutbox ist aufgetreten!", 10)
+Exit 2
+EndIf
 If $debug = True Then FileWrite("second.html", $source[0])
 $source = StringReplace($source[0], '<img width="16" height="16" src="images/smilies/frown.gif" border="0" alt="" title="Frown" class="inlineimg" />', ':o')
 $source = StringReplace($source, '<img width="16" height="16" src="images/smilies/smile.gif" border="0" alt="" title="Smile" class="inlineimg" />', ':)')
@@ -4521,11 +4584,16 @@ Return True
 EndIf
 EndFunc ;==>_Login
 
-Func _Post()
+Func _Post($ch = 0)
 ;~ 	$oWebTCP = _WebTcp_Create()
 ;~ 	$oWebTCP.Navigate("http://www.elitepvpers.com/")
 ;~ 	$bLoggedIn = _Login($oWebTCP)
-If $bLoggedIn Then $oWebTCP.Navigate("http://www.elitepvpers.com/forum/mgc_cb_evo_ajax.php", "do=ajax_chat&channel_id=0&chat=" & StringReplace(StringReplace(GUICtrlRead($input), " ", "%20"), ":", "%3A") & "&securitytoken=" & $securitytoken[0] & "&securitytoken=" & $securitytoken[0] & "&s=")
+If GUICtrlRead($channel) = "English" Then
+$ch = 1
+Else
+$ch = 0
+EndIf
+If $bLoggedIn Then $oWebTCP.Navigate("http://www.elitepvpers.com/forum/mgc_cb_evo_ajax.php", "do=ajax_chat&channel_id=" & $ch & "&chat=" & StringReplace(StringReplace(GUICtrlRead($input), " ", "%20"), ":", "%3A") & "&securitytoken=" & $securitytoken[0] & "&securitytoken=" & $securitytoken[0] & "&s=")
 GUICtrlSetData($input, "")
 EndFunc
 
@@ -4559,10 +4627,37 @@ IniWrite($file, "Benutzerdaten", "PW", 0)
 EndIf
 IniWrite($file, "Benutzerdaten", "HWID", $_hwid)
 IniWrite($file, "Benutzerdaten", "Group", $group[0])
+IniWrite($file, "Shoutbox", "Channel", GUICtrlRead($channel))
 GUIDelete($Form1)
 HotKeySet("{ENTER}")
 $GUI1 = 1
 EndFunc ;==>Eintrag
+
+Func Settings()
+IniWrite($file, "Shoutbox", "Ignore", GUICtrlRead($ignorecheck))
+IniWrite($file, "Shoutbox", "Highlight", GUICtrlRead($highlightown))
+IniWrite($file, "Shoutbox", "Tray", GUICtrlRead($traynotify))
+IniWrite($file, "Shoutbox", "Indent", GUICtrlRead($indent))
+IniWrite($file, "Shoutbox", "Naughty", GUICtrlRead($naughtymode))
+If (GUICtrlRead($naughtymode) <> 4 And $naughty = False) Or (GUICtrlRead($naughtymode) = 4 And $naughty = True) Or GUICtrlRead($channel) <> IniRead($file, "Shoutbox", "Channel", "Deutsch") Then
+IniWrite($file, "Shoutbox", "Channel", GUICtrlRead($channel))
+If @Compiled = 1 Then
+Run(FileGetShortName(@ScriptFullPath))
+Else
+Run(FileGetShortName(@AutoItExe) & " " & FileGetShortName(@ScriptFullPath))
+EndIf
+_Exit(1)
+EndIf
+_GUICtrlRichEdit_SetText($Edit, "Shoutbox wird geladen ...")
+$Traydo = False
+If GUICtrlRead($channel) = "English" Then
+$ch = 1
+Else
+$ch = 0
+EndIf
+Ueberpruefung(2, $ch)
+Ueberpruefung(1, $ch)
+EndFunc
 
 Func _mimimize()
 GUISetState(@SW_MINIMIZE, $Gui)
@@ -4576,8 +4671,18 @@ Func Profil()
 ShellExecute("http://www.elitepvpers.com/forum/profile.php?do=editprofile")
 EndFunc ;==>Profil
 
+Func _Update()
+MsgBox(64, "Neue Version", "Es gibt eine neue Version zum downloaden!")
+ShellExecute("http://www.elitepvpers.com/forum/premium-releases-sharing/2090399-premium-staff-extern-shoutbox-tool.html")
+EndFunc
+
 Func _Refresh()
-Ueberpruefung(1)
+If GUICtrlRead($channel) = "English" Then
+$ch = 1
+Else
+$ch = 0
+EndIf
+Ueberpruefung(1, $ch)
 EndFunc
 
 Func _hotkey()
